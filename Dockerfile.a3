@@ -18,6 +18,7 @@
 FROM quay.io/ascend/cann:8.5.1-a3-ubuntu22.04-py3.11
 
 ARG PIP_INDEX_URL="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+ARG MOONCAKE_REPO="https://gitee.com/mirrors/mooncake"
 ARG MOONCAKE_TAG=v0.3.8.post1
 ARG SOC_VERSION="ascend910_9391"
 
@@ -35,7 +36,7 @@ WORKDIR /workspace
 # Install Mooncake dependencies
 RUN apt-get update -y && \
     apt-get install -y git vim wget net-tools gcc g++ cmake numactl libnuma-dev libjemalloc2 && \
-    git clone --depth 1 --branch ${MOONCAKE_TAG} https://github.com/kvcache-ai/Mooncake /vllm-workspace/Mooncake && \
+    git clone --depth 1 --branch ${MOONCAKE_TAG} ${MOONCAKE_REPO} /vllm-workspace/Mooncake && \
     cp /vllm-workspace/vllm-ascend/tools/mooncake_installer.sh /vllm-workspace/Mooncake/ && \
     cd /vllm-workspace/Mooncake && bash mooncake_installer.sh -y && \
     ARCH=$(uname -m) && \
@@ -48,7 +49,7 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Install vLLM
-ARG VLLM_REPO=https://github.com/vllm-project/vllm.git
+ARG VLLM_REPO=https://gitee.com/mirrors/vllm.git
 ARG VLLM_TAG=v0.18.0
 RUN git clone --depth 1 $VLLM_REPO --branch $VLLM_TAG /vllm-workspace/vllm
 # In x86, triton will be installed by vllm. But in Ascend, triton doesn't work correctly. we need to uninstall it.

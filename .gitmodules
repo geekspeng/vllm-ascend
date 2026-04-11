@@ -2,3 +2,6 @@
 	path = csrc/third_party/catlass
 	url = https://gitcode.com/cann/catlass.git
 	branch = catlass-v1-stable
+[submodule "pybind11"]
+	path = extern/pybind11
+	url = https://gitee.com/mirrors/pybind11.git

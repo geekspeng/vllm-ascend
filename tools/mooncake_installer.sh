@@ -174,7 +174,7 @@ elif command -v yum &> /dev/null; then
 
     # install yaml-cpp
     cd "${REPO_ROOT}/thirdparties"
-    clone_repo_if_not_exists "yaml-cpp" https://github.com/jbeder/yaml-cpp.git
+    clone_repo_if_not_exists "yaml-cpp" https://gitee.com/mirrors/yaml-cpp.git
     cd yaml-cpp || exit
     rm -rf build
     mkdir -p build && cd build
@@ -212,8 +212,8 @@ fi
 
 # Download yalantinglibs
 YALANTINGLIBS_ZIPFILE="yalantinglibs-${YALANTINGLIBS_VERSION}.zip"
-echo "Downloading yalantinglibs ${YALANTINGLIBS_VERSION} from ${GITHUB_PROXY}/alibaba/yalantinglibs/archive/refs/tags/${YALANTINGLIBS_VERSION}.zip"
-wget -q --show-progress -O ${YALANTINGLIBS_ZIPFILE} ${GITHUB_PROXY}/alibaba/yalantinglibs/archive/refs/tags/${YALANTINGLIBS_VERSION}.zip
+echo "Downloading yalantinglibs ${YALANTINGLIBS_VERSION} from https://gitee.com/mirrors/yalantinglibs/archive/refs/tags/${YALANTINGLIBS_VERSION}.zip"
+wget -q --show-progress -O ${YALANTINGLIBS_ZIPFILE} https://gitee.com/mirrors/yalantinglibs/archive/refs/tags/${YALANTINGLIBS_VERSION}.zip
 check_success "Failed to download yalantinglibs"
 
 # Extract yalantinglibs
@@ -264,6 +264,9 @@ if [ -f "${REPO_ROOT}/.gitmodules" ]; then
     if [ -d "${REPO_ROOT}/${FIRST_SUBMODULE}/.git" ] || [ -f "${REPO_ROOT}/${FIRST_SUBMODULE}/.git" ]; then
         echo -e "${YELLOW}Git submodules already initialized. Skipping...${NC}"
     else
+        echo "Replacing GitHub URLs in .gitmodules with Gitee mirrors..."
+        sed -i 's|https://github.com/pybind/pybind11.git|https://gitee.com/mirrors/pybind11.git|g' "${REPO_ROOT}/.gitmodules"
+
         echo "Initializing git submodules..."
         git submodule update --init
         check_success "Failed to initialize git submodules"
